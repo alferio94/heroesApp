@@ -1,15 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { Heroe } from '../../interfaces/heroes.interface';
+import { HeroesService } from '../../services/heroes.service';
+import { switchMap } from 'rxjs/operators';
 @Component({
   selector: 'app-heroe',
   templateUrl: './heroe.component.html',
-  styleUrls: ['./heroe.component.css']
+  styleUrls: ['./heroe.component.css'],
 })
 export class HeroeComponent implements OnInit {
-
-  constructor() { }
+  heroe!: Heroe;
+  constructor(
+    private heroeService: HeroesService,
+    private route: ActivatedRoute,
+    private router : Router
+  ) {}
 
   ngOnInit(): void {
+    this.route.params
+      .pipe(switchMap(({ id }) => this.heroeService.getHeroe(id)))
+      .subscribe((heroe) => (this.heroe = heroe));
   }
-
+  regresar(){
+    this.router.navigate(['/heroes/listado'])
+  }
 }
